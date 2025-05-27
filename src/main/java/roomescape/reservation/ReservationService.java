@@ -21,6 +21,7 @@ import roomescape.reservation.domain.ReservationStatus;
 import roomescape.reservation.dto.AdminFilterReservationRequest;
 import roomescape.reservation.dto.AdminReservationRequest;
 import roomescape.reservation.dto.MineReservationResponse;
+import roomescape.reservation.dto.ReservationPaymentRequest;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 import roomescape.reservation.repository.ReservationRepository;
@@ -38,12 +39,12 @@ public class ReservationService {
     private final ThemeRepository themeRepository;
     private final MemberRepository memberRepository;
 
-    public ReservationResponse create(final ReservationRequest request, final LoginMember loginMember) {
-        final ReservationTime reservationTime = getReservationTimeById(request.timeId());
-        final Theme theme = getThemeById(request.themeId());
+    public ReservationResponse create(final ReservationPaymentRequest request, final LoginMember loginMember) {
+        final ReservationTime reservationTime = getReservationTimeById(request.reservationRequest().timeId());
+        final Theme theme = getThemeById(request.reservationRequest().timeId());
         final Member member = getMemberByEmail(loginMember.email());
 
-        return save(request.date(), reservationTime, theme, member);
+        return save(request.reservationRequest().date(), reservationTime, theme, member);
     }
 
     public ReservationResponse createForAdmin(final AdminReservationRequest request) {

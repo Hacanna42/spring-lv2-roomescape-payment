@@ -37,6 +37,8 @@ import roomescape.reservation.dto.AdminReservationRequest;
 import roomescape.reservation.dto.MineReservationResponse;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
+import roomescape.reservation.dto.PaymentRequest;
+import roomescape.reservation.dto.ReservationPaymentRequest;
 import roomescape.reservation.repository.ReservationRepository;
 import roomescape.reservation.repository.ReservationRepositoryImpl;
 import roomescape.reservationtime.domain.ReservationTime;
@@ -97,9 +99,9 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-001", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-001", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
@@ -127,9 +129,9 @@ public class ReservationServiceTest {
             memberRepositoryFacade.save(member);
             reservationTimeRepository.save(reservationTime);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-002", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-002", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
@@ -148,9 +150,9 @@ public class ReservationServiceTest {
             memberRepositoryFacade.save(member);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-003", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-003", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
@@ -170,9 +172,9 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-004", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-004", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
@@ -200,9 +202,9 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-005", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-005", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
@@ -223,9 +225,9 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.now().minusDays(1), 1L, 1L,
-                "BOOSTA-ORDER-006", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.now().minusDays(1), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-006", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
@@ -246,9 +248,9 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.now(), 1L, 1L,
-                "BOOSTA-ORDER-007", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.now(), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-007", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
@@ -630,14 +632,14 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-008", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-008", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
-            final ReservationResponse actual = reservationService.createWaiting(request, loginMember);
+            final ReservationResponse actual = reservationService.createWaiting(request.reservationRequest(), loginMember);
 
             // then
             assertSoftly(s -> {
@@ -669,15 +671,15 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-009", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-009", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
             assertThatThrownBy(() -> {
-                reservationService.createWaiting(request, loginMember);
+                reservationService.createWaiting(request.reservationRequest(), loginMember);
             }).isInstanceOf(ReservationNotExistsMemberException.class);
 
         }
@@ -702,15 +704,15 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 2L, 1L,
-                "BOOSTA-ORDER-010", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 2L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-010", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
             assertThatThrownBy(() -> {
-                reservationService.createWaiting(request, loginMember);
+                reservationService.createWaiting(request.reservationRequest(), loginMember);
             }).isInstanceOf(ReservationNotExistsTimeException.class);
 
         }
@@ -735,15 +737,15 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 2L,
-                "BOOSTA-ORDER-011", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 2L),
+                new PaymentRequest("BOOSTA-ORDER-011", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
             assertThatThrownBy(() -> {
-                reservationService.createWaiting(request, loginMember);
+                reservationService.createWaiting(request.reservationRequest(), loginMember);
             }).isInstanceOf(ReservationNotExistsThemeException.class);
         }
 
@@ -765,15 +767,15 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-012", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-012", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
             assertThatThrownBy(() -> {
-                reservationService.createWaiting(request, loginMember);
+                reservationService.createWaiting(request.reservationRequest(), loginMember);
             }).isInstanceOf(ReservationConflictException.class);
         }
 
@@ -789,15 +791,15 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-013", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-013", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
             assertThatThrownBy(() -> {
-                reservationService.createWaiting(request, loginMember);
+                reservationService.createWaiting(request.reservationRequest(), loginMember);
             }).isInstanceOf(ReservationNotExistsPendingException.class);
         }
 
@@ -822,15 +824,15 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2024, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-014", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2024, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-014", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
             assertThatThrownBy(() -> {
-                reservationService.createWaiting(request, loginMember);
+                reservationService.createWaiting(request.reservationRequest(), loginMember);
             }).isInstanceOf(ReservationPastDateException.class);
         }
 
@@ -856,15 +858,15 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.now(), 1L, 1L,
-                "BOOSTA-ORDER-015", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.now(), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-015", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
             assertThatThrownBy(() -> {
-                reservationService.createWaiting(request, loginMember);
+                reservationService.createWaiting(request.reservationRequest(), loginMember);
             }).isInstanceOf(ReservationPastTimeException.class);
         }
 
@@ -891,14 +893,14 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(
-                LocalDate.of(2025, 12, 30), 1L, 1L,
-                "BOOSTA-ORDER-016", "dummy-payment-key", 10000L, "CARD"
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                new PaymentRequest("BOOSTA-ORDER-016", "dummy-payment-key", 10000L, "CARD")
             );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
-            final ReservationResponse actual = reservationService.createWaiting(request, loginMember);
+            final ReservationResponse actual = reservationService.createWaiting(request.reservationRequest(), loginMember);
 
             // then
             assertSoftly(s -> {
