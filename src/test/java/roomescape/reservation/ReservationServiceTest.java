@@ -97,7 +97,10 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-001", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
@@ -124,7 +127,10 @@ public class ReservationServiceTest {
             memberRepositoryFacade.save(member);
             reservationTimeRepository.save(reservationTime);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-002", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -142,7 +148,10 @@ public class ReservationServiceTest {
             memberRepositoryFacade.save(member);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-003", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -161,7 +170,10 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-004", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -188,7 +200,10 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-005", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -208,7 +223,10 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.now().minusDays(1), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.now().minusDays(1), 1L, 1L,
+                "BOOSTA-ORDER-006", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -228,7 +246,10 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.now(), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.now(), 1L, 1L,
+                "BOOSTA-ORDER-007", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -609,7 +630,10 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-008", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
@@ -645,7 +669,10 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-009", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -675,7 +702,10 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 2L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 2L, 1L,
+                "BOOSTA-ORDER-010", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -705,7 +735,10 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 2L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 2L,
+                "BOOSTA-ORDER-011", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when & then
@@ -732,7 +765,10 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-012", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
@@ -753,7 +789,10 @@ public class ReservationServiceTest {
             reservationTimeRepository.save(reservationTime);
             themeRepositoryFacade.save(theme);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-013", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
@@ -783,7 +822,10 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2024, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2024, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-014", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
@@ -814,7 +856,10 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.now(), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.now(), 1L, 1L,
+                "BOOSTA-ORDER-015", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when
@@ -846,7 +891,10 @@ public class ReservationServiceTest {
             themeRepositoryFacade.save(theme);
             reservationRepository.save(reservation);
 
-            final ReservationRequest request = new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L);
+            final ReservationRequest request = new ReservationRequest(
+                LocalDate.of(2025, 12, 30), 1L, 1L,
+                "BOOSTA-ORDER-016", "dummy-payment-key", 10000L, "CARD"
+            );
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
 
             // when

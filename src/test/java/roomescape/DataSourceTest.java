@@ -47,6 +47,12 @@ class DataSourceTest {
         RESERVATION_BODY.put("date", "2026-08-05");
         RESERVATION_BODY.put("timeId", "1");
         RESERVATION_BODY.put("themeId", "1");
+        RESERVATION_BODY.put("orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO");
+        RESERVATION_BODY.put("paymentKey", "tgen_202505271618159Y599");
+        RESERVATION_BODY.put("amount", "10000");
+        RESERVATION_BODY.put("paymentType", "NORMAL");
+
+
 
         TIME_BODY.put("startAt", "10:00");
 

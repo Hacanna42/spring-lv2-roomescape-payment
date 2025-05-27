@@ -49,6 +49,10 @@ class ReservationApiTest {
         RESERVATION_BODY.put("timeId", "1");
         RESERVATION_BODY.put("themeId", "1");
         RESERVATION_BODY.put("memberId", "1");
+        RESERVATION_BODY.put("orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO");
+        RESERVATION_BODY.put("paymentKey", "tgen_202505271618159Y599");
+        RESERVATION_BODY.put("amount", "10000");
+        RESERVATION_BODY.put("paymentType", "NORMAL");
 
         TIME_BODY.put("startAt", "10:00");
 
@@ -102,36 +106,65 @@ class ReservationApiTest {
 
         static Stream<Arguments> post(){
             return Stream.of(
-                    Arguments.of(Map.of(
-                            "date", "2026-12-01",
-                            "timeId", 1L,
-                            "themeId", 1L
-                    ), HttpStatus.CREATED),
+                Arguments.of(Map.of(
+                        "date", "2026-12-01",
+                        "timeId", 1L,
+                        "themeId", 1L,
+                        "orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO",
+                        "paymentKey", "tgen_202505271618159Y599",
+                        "amount", 10000,
+                        "paymentType", "NORMAL"
+                ), HttpStatus.CREATED),
 
-                    Arguments.of(Map.of(
-                            "date", "2026-12-01",
-                            "timeId", 1L
-                    ), HttpStatus.BAD_REQUEST),
-                    Arguments.of(Map.of(
-                            "timeId", 1L,
-                            "themeId", 1L
-                    ), HttpStatus.BAD_REQUEST),
-                    Arguments.of(Map.of(
-                            "date", "2026-12-01",
-                            "themeId", 1L
-                    ), HttpStatus.BAD_REQUEST),
-                    Arguments.of(Map.of(
-                            "date", "2026-12-01",
-                            "timeId", 1L
-                    ), HttpStatus.BAD_REQUEST),
+                Arguments.of(Map.of(
+                        "date", "2026-12-01",
+                        "timeId", 1L,
+                        "orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO",
+                        "paymentKey", "tgen_202505271618159Y599",
+                        "amount", 10000,
+                        "paymentType", "NORMAL"
+                ), HttpStatus.BAD_REQUEST),
+                Arguments.of(Map.of(
+                        "timeId", 1L,
+                        "themeId", 1L,
+                        "orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO",
+                        "paymentKey", "tgen_202505271618159Y599",
+                        "amount", 10000,
+                        "paymentType", "NORMAL"
+                ), HttpStatus.BAD_REQUEST),
+                Arguments.of(Map.of(
+                        "date", "2026-12-01",
+                        "themeId", 1L,
+                        "orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO",
+                        "paymentKey", "tgen_202505271618159Y599",
+                        "amount", 10000,
+                        "paymentType", "NORMAL"
+                ), HttpStatus.BAD_REQUEST),
+                Arguments.of(Map.of(
+                        "date", "2026-12-01",
+                        "timeId", 1L,
+                        "orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO",
+                        "paymentKey", "tgen_202505271618159Y599",
+                        "amount", 10000,
+                        "paymentType", "NORMAL"
+                ), HttpStatus.BAD_REQUEST),
 
-                    Arguments.of(Map.of(
-                            "date", "",
-                            "timeId", 1L,
-                            "themeId", 1L
-                    ), HttpStatus.BAD_REQUEST),
+                Arguments.of(Map.of(
+                        "date", "",
+                        "timeId", 1L,
+                        "themeId", 1L,
+                        "orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO",
+                        "paymentKey", "tgen_202505271618159Y599",
+                        "amount", 10000,
+                        "paymentType", "NORMAL"
+                ), HttpStatus.BAD_REQUEST),
 
-                    Arguments.of(Map.of(), HttpStatus.BAD_REQUEST)
+                Arguments.of(Map.of(
+                        "orderId", "BOOSTA-WTESTMC41NZA2MjQyMjI2MDEO",
+                        "paymentKey", "tgen_202505271618159Y599",
+                        "amount", 10000,
+                        "paymentType", "NORMAL"
+                ), HttpStatus.BAD_REQUEST)
             );
         }
 
