@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ------  결제위젯 초기화 ------
     // @docs https://docs.tosspayments.com/reference/widget-sdk#sdk-설치-및-초기화
     // @docs https://docs.tosspayments.com/reference/widget-sdk#renderpaymentmethods선택자-결제-금액-옵션
-    const paymentAmount = 483602000;
+    const paymentAmount = 1;
     const widgetClientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
     const paymentWidget = PaymentWidget(widgetClientKey, PaymentWidget.ANONYMOUS);
     paymentWidget.renderPaymentMethods(
@@ -185,7 +185,7 @@ function onReservationButtonClick(event, paymentWidget) {
         */
         // TOSS 결제 위젯 Javascript SDK 연동 방식 중 'Promise로 처리하기'를 적용함
         // https://docs.tosspayments.com/reference/widget-sdk#promise%EB%A1%9C-%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0
-        const orderIdPrefix = "WTEST";
+        const orderIdPrefix = "BOOSTA";
         paymentWidget.requestPayment({
             orderId: orderIdPrefix + generateRandomString(),
             orderName: "히스타 집에서 살아남기 예약 1회",
