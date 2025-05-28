@@ -1,6 +1,8 @@
 package roomescape.api;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -22,6 +24,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import roomescape.common.PaymentManager;
+import roomescape.common.dto.PaymentError;
+import roomescape.exception.custom.reason.payment.PaymentConfirmException;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class ReservationApiTest {
@@ -35,12 +41,17 @@ class ReservationApiTest {
     private final JdbcTemplate jdbcTemplate;
     private final int port;
 
+    @MockitoBean
+    private final PaymentManager paymentManager;
+
     public ReservationApiTest(
             @LocalServerPort final int port,
-            @Autowired final JdbcTemplate jdbcTemplate
+            @Autowired final JdbcTemplate jdbcTemplate,
+            @Autowired final PaymentManager paymentManager
     ) {
         this.port = port;
         this.jdbcTemplate = jdbcTemplate;
+        this.paymentManager = paymentManager;
     }
 
     @BeforeAll
@@ -193,6 +204,27 @@ class ReservationApiTest {
             givenCreateMember();
             final Cookie cookie = givenAuthCookie();
             givenCreateReservationTime();
+
+            // when & then
+            RestAssured.given().port(port).log().all()
+                    .contentType(ContentType.JSON)
+                    .cookie(cookie)
+                    .body(RESERVATION_BODY)
+                    .when().post("/reservations")
+                    .then().log().all()
+                    .statusCode(400);
+        }
+
+        @DisplayName("예약을 생성할 때, PaymentManager#confirmPayment 예외가 발생하면 400을 응답한다.")
+        @Test
+        void post4() {
+            // given
+            givenCreateMember();
+            final Cookie cookie = givenAuthCookie();
+            givenCreateReservationTime();
+            givenCreateTheme();
+            doThrow(new PaymentConfirmException(new PaymentError("code", "message")))
+                    .when(paymentManager).confirmPayment(any());
 
             // when & then
             RestAssured.given().port(port).log().all()

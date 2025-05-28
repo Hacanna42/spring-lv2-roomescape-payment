@@ -3,8 +3,9 @@ package roomescape.reservation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-
+import static org.mockito.Mockito.only;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,12 +13,21 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
+import org.mockito.BDDMockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import roomescape.auth.dto.LoginMember;
+import roomescape.common.PaymentManager;
+import roomescape.common.dto.PaymentError;
+import roomescape.common.dto.PaymentRequest;
+import roomescape.exception.custom.reason.payment.PaymentConfirmException;
 import roomescape.exception.custom.reason.reservation.ReservationConflictException;
 import roomescape.exception.custom.reason.reservation.ReservationNotExistsMemberException;
 import roomescape.exception.custom.reason.reservation.ReservationNotExistsPendingException;
@@ -27,18 +37,17 @@ import roomescape.exception.custom.reason.reservation.ReservationNotFoundExcepti
 import roomescape.exception.custom.reason.reservation.ReservationPastDateException;
 import roomescape.exception.custom.reason.reservation.ReservationPastTimeException;
 import roomescape.member.domain.Member;
-import roomescape.member.repository.MemberRepositoryImpl;
 import roomescape.member.domain.MemberRole;
+import roomescape.member.repository.MemberRepositoryImpl;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.domain.ReservationDate;
 import roomescape.reservation.domain.ReservationStatus;
 import roomescape.reservation.dto.AdminFilterReservationRequest;
 import roomescape.reservation.dto.AdminReservationRequest;
 import roomescape.reservation.dto.MineReservationResponse;
+import roomescape.reservation.dto.ReservationPaymentRequest;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
-import roomescape.common.dto.PaymentRequest;
-import roomescape.reservation.dto.ReservationPaymentRequest;
 import roomescape.reservation.repository.ReservationRepository;
 import roomescape.reservation.repository.ReservationRepositoryImpl;
 import roomescape.reservationtime.domain.ReservationTime;
@@ -54,12 +63,16 @@ import roomescape.theme.repository.ThemeRepositoryImpl;
         ThemeRepositoryImpl.class,
         ReservationTimeRepositoryImpl.class,
         ReservationRepositoryImpl.class,
-        ReservationService.class
+        ReservationService.class,
+        PaymentManager.class
 })
+@Transactional(propagation = Propagation.SUPPORTS)
 public class ReservationServiceTest {
 
     @MockitoSpyBean
     private final ReservationRepository reservationRepository;
+    @MockitoBean
+    private final PaymentManager paymentManager;
     private final ReservationService reservationService;
 
     private final ReservationTimeRepository reservationTimeRepository;
@@ -70,12 +83,14 @@ public class ReservationServiceTest {
     public ReservationServiceTest(
             final ReservationRepository reservationRepository,
             final ReservationService reservationService,
+            final PaymentManager paymentManager,
 
             final ReservationTimeRepository reservationTimeRepository,
             final ThemeRepositoryImpl themeRepositoryFacade,
             final MemberRepositoryImpl memberRepositoryFacade
     ) {
         this.reservationRepository = reservationRepository;
+        this.paymentManager = paymentManager;
         this.reservationService = reservationService;
 
         this.reservationTimeRepository = reservationTimeRepository;
@@ -258,6 +273,84 @@ public class ReservationServiceTest {
             assertThatThrownBy(() -> {
                 reservationService.create(request, loginMember);
             }).isInstanceOf(ReservationPastTimeException.class);
+        }
+
+        @DisplayName("reservation을 생성하고, 결제 요청 API를 호출한다.")
+        @Test
+        void create7() {
+            // given
+            final Member member = new Member("email", "pass", "boogie", MemberRole.MEMBER);
+            final ReservationTime reservationTime = new ReservationTime(LocalTime.of(12, 40));
+            final Theme theme = new Theme("야당", "야당당", "123");
+            memberRepositoryFacade.save(member);
+            reservationTimeRepository.save(reservationTime);
+            themeRepositoryFacade.save(theme);
+
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                    new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                    new PaymentRequest("BOOSTA-ORDER-001", "dummy-payment-key", 10000L, "CARD")
+            );
+            final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
+
+            // when
+            reservationService.create(request, loginMember);
+
+            // then
+            then(paymentManager).should(only()).confirmPayment(request.paymentRequest());
+        }
+
+        @DisplayName("예약 생성 시, 결제 요청 API가 실패하면 예외가 발생한다.")
+        @Test
+        void create8() {
+            // given
+            final Member member = new Member("email", "pass", "boogie", MemberRole.MEMBER);
+            final ReservationTime reservationTime = new ReservationTime(LocalTime.of(12, 40));
+            final Theme theme = new Theme("야당", "야당당", "123");
+            memberRepositoryFacade.save(member);
+            reservationTimeRepository.save(reservationTime);
+            themeRepositoryFacade.save(theme);
+
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                    new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                    new PaymentRequest("BOOSTA-ORDER-001", "dummy-payment-key", 10000L, "CARD")
+            );
+            final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
+
+            BDDMockito.doThrow(PaymentConfirmException.class)
+                    .when(paymentManager).confirmPayment(request.paymentRequest());
+
+            // when & then
+            assertThatThrownBy(() -> {
+                reservationService.create(request, loginMember);
+            }).isInstanceOf(PaymentConfirmException.class);
+        }
+
+        @DisplayName("결제 실패 시 DB 롤백이 발생해야 한다.")
+        @Test
+        void rollbackOccursWhenPaymentFails() {
+            // given
+            final Member member = new Member("email", "pass", "boogie", MemberRole.MEMBER);
+            final ReservationTime reservationTime = new ReservationTime(LocalTime.of(12, 40));
+            final Theme theme = new Theme("야당", "야당당", "123");
+            memberRepositoryFacade.save(member);
+            reservationTimeRepository.save(reservationTime);
+            themeRepositoryFacade.save(theme);
+
+            final ReservationPaymentRequest request = new ReservationPaymentRequest(
+                    new ReservationRequest(LocalDate.of(2025, 12, 30), 1L, 1L),
+                    new PaymentRequest("BOOSTA-ORDER-ROLLBACK", "fail-payment-key", 10000L, "CARD")
+            );
+            final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
+
+            BDDMockito.doThrow(PaymentConfirmException.class)
+                    .when(paymentManager).confirmPayment(request.paymentRequest());
+
+            // when
+            assertThatThrownBy(() -> reservationService.create(request, loginMember))
+                    .isInstanceOf(PaymentConfirmException.class);
+
+            // then
+            assertThat(reservationRepository.findAll()).isEmpty();
         }
     }
 
@@ -875,7 +968,7 @@ public class ReservationServiceTest {
         void create9() {
             // given
             final Member member = new Member("email", "pass", "boogie", MemberRole.MEMBER);
-            final ReservationTime reservationTime = new ReservationTime(LocalTime.now().plusMinutes(1));
+            final ReservationTime reservationTime = new ReservationTime(LocalTime.now().plusMinutes(1).withNano(0));
             final Theme theme = new Theme("야당", "야당당", "123");
 
             final Member anotherMember = new Member("xxxx", "pass", "아서", MemberRole.MEMBER);

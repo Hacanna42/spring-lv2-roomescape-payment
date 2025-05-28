@@ -20,6 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import roomescape.common.PaymentManager;
 import roomescape.reservation.dto.ReservationResponse;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -34,12 +36,17 @@ class DataSourceTest {
     private final JdbcTemplate jdbcTemplate;
     private final int port;
 
+    @MockitoBean
+    private final PaymentManager paymentManager;
+
     public DataSourceTest(
             @Autowired final JdbcTemplate jdbcTemplate,
-            @LocalServerPort final int port
+            @LocalServerPort final int port,
+            @Autowired PaymentManager paymentManager
     ) {
         this.jdbcTemplate = jdbcTemplate;
         this.port = port;
+        this.paymentManager = paymentManager;
     }
 
     @BeforeAll
