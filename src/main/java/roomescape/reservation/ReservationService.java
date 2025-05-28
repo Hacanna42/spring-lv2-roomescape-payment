@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.auth.dto.LoginMember;
+import roomescape.common.PaymentManager;
 import roomescape.exception.custom.reason.reservation.ReservationConflictException;
 import roomescape.exception.custom.reason.reservation.ReservationNotExistsMemberException;
 import roomescape.exception.custom.reason.reservation.ReservationNotExistsPendingException;
@@ -38,13 +39,26 @@ public class ReservationService {
     private final ReservationTimeRepository reservationTimeRepository;
     private final ThemeRepository themeRepository;
     private final MemberRepository memberRepository;
+    private final PaymentManager paymentManager;
 
+    @Transactional
     public ReservationResponse create(final ReservationPaymentRequest request, final LoginMember loginMember) {
         final ReservationTime reservationTime = getReservationTimeById(request.reservationRequest().timeId());
         final Theme theme = getThemeById(request.reservationRequest().timeId());
         final Member member = getMemberByEmail(loginMember.email());
 
-        return save(request.reservationRequest().date(), reservationTime, theme, member);
+        final LocalDateTime currentTimestamp = LocalDateTime.now();
+        final ReservationDate reservationDate = ReservationDate.of(request.reservationRequest().date(), currentTimestamp.toLocalDate());
+
+        validateDuplicatePending(reservationDate, reservationTime, theme);
+
+
+        final Reservation notSavedReservation = Reservation.of(reservationDate, member, reservationTime, theme,
+                ReservationStatus.PENDING, currentTimestamp);
+        final Reservation savedReservation = reservationRepository.save(notSavedReservation);
+
+        paymentManager.confirmPayment(request.paymentRequest());
+        return ReservationResponse.from(savedReservation);
     }
 
     public ReservationResponse createForAdmin(final AdminReservationRequest request) {
@@ -52,15 +66,11 @@ public class ReservationService {
         final Theme theme = getThemeById(request.themeId());
         final Member member = getMemberById(request.memberId());
 
-        return save(request.date(), reservationTime, theme, member);
-    }
-
-    private ReservationResponse save(final LocalDate date, final ReservationTime reservationTime,
-                                     final Theme theme, final Member member) {
         final LocalDateTime currentTimestamp = LocalDateTime.now();
-        final ReservationDate reservationDate = ReservationDate.of(date, currentTimestamp.toLocalDate());
+        final ReservationDate reservationDate = ReservationDate.of(request.date(), currentTimestamp.toLocalDate());
 
         validateDuplicatePending(reservationDate, reservationTime, theme);
+
 
         final Reservation notSavedReservation = Reservation.of(reservationDate, member, reservationTime, theme,
                 ReservationStatus.PENDING, currentTimestamp);

@@ -2,9 +2,9 @@ package roomescape.reservation.dto;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
+import roomescape.common.dto.PaymentRequest;
 
 @Builder
 @Jacksonized

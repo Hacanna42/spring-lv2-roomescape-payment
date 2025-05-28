@@ -228,15 +228,16 @@ async function fetchReservationPayment(paymentData, reservationData) {
         },
         body: JSON.stringify(reservationPaymentRequest),
     }).then(response => {
-        if (!response.ok) {
+        if (response.status !== 201) {
             return response.json().then(errorBody => {
-                console.error("예약 결제 실패 : " + JSON.stringify(errorBody));
+                console.error("예약 결제 실패.. 방탈출 없이 어케사나.. : " + JSON.stringify(errorBody.message));
                 window.alert("예약 결제 실패 메시지");
             });
         } else {
             response.json().then(successBody => {
                 console.log("예약 결제 성공 : " + JSON.stringify(successBody));
                 window.location.reload();
+                alert("예약 성공! 방탈출 없이 어케 사나");
             });
         }
     }).catch(error => {

@@ -37,7 +37,7 @@ import roomescape.reservation.dto.AdminReservationRequest;
 import roomescape.reservation.dto.MineReservationResponse;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
-import roomescape.reservation.dto.PaymentRequest;
+import roomescape.common.dto.PaymentRequest;
 import roomescape.reservation.dto.ReservationPaymentRequest;
 import roomescape.reservation.repository.ReservationRepository;
 import roomescape.reservation.repository.ReservationRepositoryImpl;
