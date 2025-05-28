@@ -2,6 +2,7 @@ package roomescape.common;
 
 import java.net.URI;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -15,15 +16,17 @@ import roomescape.exception.custom.reason.payment.PaymentConfirmException;
 public class PaymentManager {
 
     private final ObjectMapper objectMapper;
-
     private final RestClient restClient;
+
+    @Value("${secret.payment-key}")
+    private String authorizationKey;
 
     public PaymentManager(
             final ObjectMapper objectMapper
     ) {
         this.restClient = RestClient.builder()
                 .baseUrl("https://api.tosspayments.com")
-                .defaultHeader("Authorization", "Basic dGVzdF9nc2tfZG9jc19PYVB6OEw1S2RtUVhrelJ6M3k0N0JNdzY6")
+                .defaultHeader("Authorization", authorizationKey)
                 .build();
         this.objectMapper = objectMapper;
     }
