@@ -14,13 +14,18 @@ import roomescape.exception.custom.reason.payment.PaymentConfirmException;
 @Component
 public class PaymentManager {
 
+    private final ObjectMapper objectMapper;
+
     private final RestClient restClient;
 
-    public PaymentManager() {
+    public PaymentManager(
+            final ObjectMapper objectMapper
+    ) {
         this.restClient = RestClient.builder()
                 .baseUrl("https://api.tosspayments.com")
                 .defaultHeader("Authorization", "Basic dGVzdF9nc2tfZG9jc19PYVB6OEw1S2RtUVhrelJ6M3k0N0JNdzY6")
                 .build();
+        this.objectMapper = objectMapper;
     }
 
     public void confirmPayment(final PaymentRequest paymentRequest) {
@@ -31,7 +36,7 @@ public class PaymentManager {
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, ((request, response) -> {
                     final String responseBody = new String(response.getBody().readAllBytes());
-                    final PaymentError error = new ObjectMapper().readValue(responseBody, PaymentError.class);
+                    final PaymentError error = objectMapper.readValue(responseBody, PaymentError.class);
                     throw new PaymentConfirmException(error);
                 }))
                 .toBodilessEntity();
