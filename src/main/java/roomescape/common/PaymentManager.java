@@ -2,6 +2,8 @@ package roomescape.common;
 
 import java.net.URI;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -13,22 +15,23 @@ import roomescape.exception.custom.reason.payment.PaymentConfirmException;
 
 // toss pg사 이용
 @Component
+@RequiredArgsConstructor
 public class PaymentManager {
 
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
 
-    @Value("${secret.payment-key}")
-    private String authorizationKey;
-
+    @Autowired
     public PaymentManager(
-            final ObjectMapper objectMapper
-    ) {
-        this.restClient = RestClient.builder()
+            final RestClient.Builder restClientBuilder,
+            final ObjectMapper objectMapper,
+            @Value("${secret.toss-payment-key}") final String authorizationKey
+    ){
+        this.objectMapper = objectMapper;
+        restClient = restClientBuilder
                 .baseUrl("https://api.tosspayments.com")
                 .defaultHeader("Authorization", authorizationKey)
                 .build();
-        this.objectMapper = objectMapper;
     }
 
     public void confirmPayment(final PaymentRequest paymentRequest) {
