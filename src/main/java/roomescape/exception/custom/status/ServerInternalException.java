@@ -1,8 +1,10 @@
 package roomescape.exception.custom.status;
 
-public class ServerInternalException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class ServerInternalException extends CustomException {
 
     public ServerInternalException() {
-        super("서버 내부 오류가 발생했습니다.");
+        super(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
     }
 }
