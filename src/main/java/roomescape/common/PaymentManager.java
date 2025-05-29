@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 import roomescape.common.dto.PaymentError;
 import roomescape.common.dto.PaymentRequest;
@@ -26,8 +27,9 @@ public class PaymentManager {
             final RestClient.Builder restClientBuilder,
             final ObjectMapper objectMapper,
             @Value("${secret.toss-payment-key}") final String authorizationKey
-    ){
+    ) {
         this.objectMapper = objectMapper;
+
         restClient = restClientBuilder
                 .baseUrl("https://api.tosspayments.com")
                 .defaultHeader("Authorization", authorizationKey)
@@ -35,16 +37,21 @@ public class PaymentManager {
     }
 
     public void confirmPayment(final PaymentRequest paymentRequest) {
-        restClient.post()
-                .uri(URI.create("/v1/payments/confirm"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(paymentRequest)
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, ((request, response) -> {
-                    final String responseBody = new String(response.getBody().readAllBytes());
-                    final PaymentError error = objectMapper.readValue(responseBody, PaymentError.class);
-                    throw new PaymentConfirmException(error);
-                }))
-                .toBodilessEntity();
+        try {
+            restClient.post()
+                    .uri(URI.create("/v1/payments/confirm"))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(paymentRequest)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, ((request, response) -> {
+                        final String responseBody = new String(response.getBody().readAllBytes());
+                        final PaymentError error = objectMapper.readValue(responseBody, PaymentError.class);
+                        throw new PaymentConfirmException(error);
+                    }))
+                    .toBodilessEntity();
+        } catch (final ResourceAccessException e) {
+            final PaymentError error = PaymentError.connectFail();
+            throw new PaymentConfirmException(error);
+        }
     }
 }

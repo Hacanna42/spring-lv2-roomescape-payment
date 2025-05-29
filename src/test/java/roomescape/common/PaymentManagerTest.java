@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.ResourceAccessException;
 import roomescape.common.dto.PaymentRequest;
 import roomescape.exception.custom.reason.payment.PaymentConfirmException;
 
@@ -26,7 +27,7 @@ class PaymentManagerTest {
     public PaymentManagerTest(
             final PaymentManager paymentManager,
             final MockRestServiceServer server
-            ) {
+    ) {
         this.paymentManager = paymentManager;
         this.server = server;
     }
@@ -37,8 +38,7 @@ class PaymentManagerTest {
         // given
         String response = "";
 
-        server
-                .expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
+        server.expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
                 .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
 
         final PaymentRequest request = new PaymentRequest("orderId", "paymentKey", 1000L, "paymentType");
@@ -60,8 +60,7 @@ class PaymentManagerTest {
                 }
                 """;
 
-        server
-                .expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
+        server.expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
                 .andRespond(withStatus(HttpStatusCode.valueOf(400))
                         .contentType(MediaType.APPLICATION_JSON).body(response));
 
@@ -84,10 +83,26 @@ class PaymentManagerTest {
                 }
                 """;
 
-        server
-                .expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
+        server.expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
                 .andRespond(withStatus(HttpStatusCode.valueOf(500))
                         .contentType(MediaType.APPLICATION_JSON).body(response));
+
+        final PaymentRequest request = new PaymentRequest("orderId", "paymentKey", 1000L, "paymentType");
+
+        // when & then
+        assertThatThrownBy(() -> {
+            paymentManager.confirmPayment(request);
+        }).isInstanceOf(PaymentConfirmException.class);
+    }
+
+    @DisplayName("toss api에서 time out 발생시 예외가 발생한다.")
+    @Test
+    void confirmPayment3() {
+        // given
+        server.expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
+                .andRespond((request -> {
+                    throw new ResourceAccessException("타임아웃 발생!");
+                }));
 
         final PaymentRequest request = new PaymentRequest("orderId", "paymentKey", 1000L, "paymentType");
 
