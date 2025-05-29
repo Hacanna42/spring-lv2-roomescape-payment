@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,15 +14,14 @@ import roomescape.member.domain.MemberRole;
 @Component
 public class JwtProvider {
 
-    @Value("${secret.jwt-key}")
-    private String secretKey;
-    @Value("${secret.jwt-expiration}")
-    private Long validityInMilliseconds;
+    private final Long validityInMilliseconds;
+    private final Key key;
 
-    private Key key;
-
-    @PostConstruct
-    public void init() {
+    public JwtProvider(
+            @Value("${secret.jwt-key}") final String secretKey,
+            @Value("${secret.jwt-expiration}") final Long validityInMilliseconds
+    ){
+        this.validityInMilliseconds = validityInMilliseconds;
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
