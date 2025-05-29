@@ -6,35 +6,29 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.boot.test.web.client.MockServerRestClientCustomizer;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.web.client.RestClient;
+import org.springframework.test.web.client.MockRestServiceServer;
 import roomescape.common.dto.PaymentRequest;
 import roomescape.exception.custom.reason.payment.PaymentConfirmException;
 
-@RestClientTest
+@RestClientTest(PaymentManager.class)
 class PaymentManagerTest {
 
     private final PaymentManager paymentManager;
-
-    private final RestClient.Builder restClientBuilder;
-    private final MockServerRestClientCustomizer customizer;
+    private final MockRestServiceServer server;
 
     @Autowired
     public PaymentManagerTest(
-            final RestClient.Builder restClientBuilder,
-            final MockServerRestClientCustomizer customizer
-    ) {
-        this.restClientBuilder = restClientBuilder;
-        this.customizer = customizer;
-        customizer.customize(restClientBuilder);
-        this.paymentManager = new PaymentManager(restClientBuilder, new ObjectMapper(), "test");
+            final PaymentManager paymentManager,
+            final MockRestServiceServer server
+            ) {
+        this.paymentManager = paymentManager;
+        this.server = server;
     }
 
     @DisplayName("정상적으로 호출에 성공하면 예외가 발생하지 않는다.")
@@ -43,7 +37,7 @@ class PaymentManagerTest {
         // given
         String response = "";
 
-        customizer.getServer(restClientBuilder)
+        server
                 .expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
                 .andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
 
@@ -66,7 +60,7 @@ class PaymentManagerTest {
                 }
                 """;
 
-        customizer.getServer(restClientBuilder)
+        server
                 .expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
                 .andRespond(withStatus(HttpStatusCode.valueOf(400))
                         .contentType(MediaType.APPLICATION_JSON).body(response));
@@ -90,7 +84,7 @@ class PaymentManagerTest {
                 }
                 """;
 
-        customizer.getServer(restClientBuilder)
+        server
                 .expect(requestTo("https://api.tosspayments.com/v1/payments/confirm"))
                 .andRespond(withStatus(HttpStatusCode.valueOf(500))
                         .contentType(MediaType.APPLICATION_JSON).body(response));

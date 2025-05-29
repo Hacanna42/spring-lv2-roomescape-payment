@@ -1,7 +1,7 @@
 package roomescape.common;
 
-import java.net.URI;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
