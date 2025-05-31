@@ -14,7 +14,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.ResourceAccessException;
-import roomescape.common.dto.PaymentRequest;
+import roomescape.payment.PaymentManager;
+import roomescape.payment.dto.PaymentRequest;
 import roomescape.exception.custom.reason.payment.PaymentConfirmException;
 
 @RestClientTest(PaymentManager.class)
