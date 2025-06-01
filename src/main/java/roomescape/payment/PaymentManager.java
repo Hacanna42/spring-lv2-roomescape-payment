@@ -5,6 +5,7 @@ import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -26,13 +27,14 @@ public class PaymentManager {
     public PaymentManager(
             final RestClient.Builder restClientBuilder,
             final ObjectMapper objectMapper,
-            @Value("${secret.toss-payment-key}") final String authorizationKey
+            @Value("${secret.toss-payment-key}") final String authorizationKey,
+            @Value("${endpoint.toss.base-url}") final String baseUrl
     ) {
         this.objectMapper = objectMapper;
 
         restClient = restClientBuilder
-                .baseUrl("https://api.tosspayments.com")
-                .defaultHeader("Authorization", authorizationKey)
+                .baseUrl(baseUrl)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, authorizationKey)
                 .build();
     }
 
