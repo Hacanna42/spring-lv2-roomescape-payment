@@ -45,8 +45,9 @@ import roomescape.reservation.dto.MineReservationResponse;
 import roomescape.reservation.dto.ReservationPaymentRequest;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
-import roomescape.reservation.repository.ReservationRepository;
-import roomescape.reservation.repository.ReservationRepositoryImpl;
+import roomescape.reservation.repository.payment.CompletedPaymentRepositoryImpl;
+import roomescape.reservation.repository.reservation.ReservationRepository;
+import roomescape.reservation.repository.reservation.ReservationRepositoryImpl;
 import roomescape.reservationtime.domain.ReservationTime;
 import roomescape.reservationtime.repository.ReservationTimeRepository;
 import roomescape.reservationtime.repository.ReservationTimeRepositoryImpl;
@@ -61,7 +62,8 @@ import roomescape.theme.repository.ThemeRepositoryImpl;
         ReservationTimeRepositoryImpl.class,
         ReservationRepositoryImpl.class,
         ReservationService.class,
-        PaymentManager.class
+        PaymentManager.class,
+        CompletedPaymentRepositoryImpl.class
 })
 @Transactional(propagation = Propagation.SUPPORTS)
 public class ReservationServiceTest {
@@ -70,6 +72,7 @@ public class ReservationServiceTest {
     private final ReservationRepository reservationRepository;
     @MockitoBean
     private final PaymentManager paymentManager;
+
     private final ReservationService reservationService;
 
     private final ReservationTimeRepository reservationTimeRepository;
