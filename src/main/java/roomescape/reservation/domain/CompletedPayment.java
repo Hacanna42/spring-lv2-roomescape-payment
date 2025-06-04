@@ -1,6 +1,7 @@
 package roomescape.reservation.domain;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,8 +11,6 @@ import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import roomescape.payment.dto.PaymentRequest;
 
 @Entity
@@ -23,11 +22,13 @@ public class CompletedPayment {
     private Long id;
 
     @OneToOne
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(nullable = false)
     private Reservation reservation;
 
+    @Column(nullable = false)
     private String paymentKey;
 
+    @Column(nullable = false)
     private Long amount;
 
     protected CompletedPayment() {

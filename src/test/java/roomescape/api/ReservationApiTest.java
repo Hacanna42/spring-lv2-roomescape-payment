@@ -25,6 +25,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import roomescape.payment.PaymentManager;
 import roomescape.payment.dto.PaymentError;
 import roomescape.exception.custom.reason.payment.PaymentConfirmException;
@@ -43,6 +45,7 @@ class ReservationApiTest {
 
     @MockitoBean
     private final PaymentManager paymentManager;
+
 
     public ReservationApiTest(
             @LocalServerPort final int port,

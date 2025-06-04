@@ -660,7 +660,7 @@ public class ReservationServiceTest {
             final LoginMember loginMember = new LoginMember("boogie", "email", MemberRole.MEMBER);
             final MineReservationResponse expected = new MineReservationResponse(
                     1L, "테마", LocalDate.of(2025, 12, 30),
-                    LocalTime.of(12, 40), "예약", 0L
+                    LocalTime.of(12, 40), "예약", 0L, "paymentKey", 1000L
             );
 
             final Member member = new Member(loginMember.email(), "pass", "boogie", MemberRole.MEMBER);

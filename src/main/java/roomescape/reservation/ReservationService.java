@@ -3,9 +3,11 @@ package roomescape.reservation;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.TransientObjectException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.auth.dto.LoginMember;
+import roomescape.exception.custom.reason.reservation.ReservationNotDeletedException;
 import roomescape.payment.PaymentManager;
 import roomescape.exception.custom.reason.reservation.ReservationConflictException;
 import roomescape.exception.custom.reason.reservation.ReservationNotExistsMemberException;
@@ -19,6 +21,7 @@ import roomescape.reservation.domain.CompletedPayment;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.domain.ReservationDate;
 import roomescape.reservation.domain.ReservationStatus;
+import roomescape.reservation.domain.WaitingRankReservation;
 import roomescape.reservation.dto.AdminFilterReservationRequest;
 import roomescape.reservation.dto.AdminReservationRequest;
 import roomescape.reservation.dto.MineReservationResponse;
@@ -105,6 +108,7 @@ public class ReservationService {
 
     public List<MineReservationResponse> readAllMine(final LoginMember loginMember) {
         final Member member = getMemberByEmail(loginMember.email());
+
         return reservationRepository.findAllWaitingRankByMember(member).stream()
                 .map(MineReservationResponse::from)
                 .toList();
@@ -143,6 +147,10 @@ public class ReservationService {
 
         if(reservation.isPending()){
             pendingNextReservation(reservation);
+        }
+
+        if (completedPaymentRepository.existsByReservationId(id)) {
+            throw ReservationNotDeletedException.paymentNotRefunded();
         }
 
         reservationRepository.deleteById(id);
