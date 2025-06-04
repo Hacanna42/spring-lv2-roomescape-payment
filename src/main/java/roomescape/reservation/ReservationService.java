@@ -15,6 +15,7 @@ import roomescape.exception.custom.reason.reservation.ReservationNotExistsTimeEx
 import roomescape.exception.custom.reason.reservation.ReservationNotFoundException;
 import roomescape.member.domain.Member;
 import roomescape.member.repository.MemberRepository;
+import roomescape.reservation.domain.CompletedPayment;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.domain.ReservationDate;
 import roomescape.reservation.domain.ReservationStatus;
@@ -24,7 +25,9 @@ import roomescape.reservation.dto.MineReservationResponse;
 import roomescape.reservation.dto.ReservationPaymentRequest;
 import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
-import roomescape.reservation.repository.ReservationRepository;
+import roomescape.reservation.repository.payment.CompletedPaymentJpaRepository;
+import roomescape.reservation.repository.payment.CompletedPaymentRepository;
+import roomescape.reservation.repository.reservation.ReservationRepository;
 import roomescape.reservationtime.domain.ReservationTime;
 import roomescape.reservationtime.repository.ReservationTimeRepository;
 import roomescape.theme.domain.Theme;
@@ -36,6 +39,7 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final ReservationTimeRepository reservationTimeRepository;
+    private final CompletedPaymentRepository completedPaymentRepository;
     private final ThemeRepository themeRepository;
     private final MemberRepository memberRepository;
     private final PaymentManager paymentManager;
@@ -57,6 +61,10 @@ public class ReservationService {
         final Reservation savedReservation = reservationRepository.save(notSavedReservation);
 
         paymentManager.confirmPayment(request.paymentRequest());
+
+        final CompletedPayment completedPayment = CompletedPayment.of(savedReservation, request.paymentRequest());
+        completedPaymentRepository.save(completedPayment);
+
         return ReservationResponse.from(savedReservation);
     }
 
