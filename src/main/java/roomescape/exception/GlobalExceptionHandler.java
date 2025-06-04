@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import roomescape.exception.custom.reason.reservation.ReservationNotDeletedException;
 import roomescape.exception.custom.status.CustomException;
 
 @RestControllerAdvice
@@ -40,12 +41,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(notValidField + "의 값이 잘못된 형식입니다."));
     }
 
-    private String generateNotValidFieldNames(final BindingResult bindingResult) {
-        return bindingResult.getFieldErrors().stream()
-                .map(FieldError::getField)
-                .collect(Collectors.joining(", "));
+    @ExceptionHandler(ReservationNotDeletedException.class)
+    public ResponseEntity<ErrorResponse> handleReservationNotDeletedException(final ReservationNotDeletedException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getMessage()));
     }
-
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleNotCaughtExceptions(
@@ -53,5 +53,11 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("서버에서 예기치 못한 예외가 발생하였습니다."));
+    }
+
+    private String generateNotValidFieldNames(final BindingResult bindingResult) {
+        return bindingResult.getFieldErrors().stream()
+                .map(FieldError::getField)
+                .collect(Collectors.joining(", "));
     }
 }

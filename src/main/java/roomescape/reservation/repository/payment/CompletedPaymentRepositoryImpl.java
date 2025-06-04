@@ -14,4 +14,9 @@ public class CompletedPaymentRepositoryImpl implements CompletedPaymentRepositor
     public CompletedPayment save(CompletedPayment completedPayment) {
         return completedPaymentJpaRepository.save(completedPayment);
     }
+
+    @Override
+    public boolean existsByReservationId(Long reservationId) {
+        return completedPaymentJpaRepository.existsByReservationId(reservationId);
+    }
 }
