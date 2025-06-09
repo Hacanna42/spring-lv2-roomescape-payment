@@ -32,7 +32,7 @@ public class AuthController {
         final String jwt = authService.generateToken(request);
         final ResponseCookie cookie = ResponseCookie
                 .from(TOKEN_NAME, jwt)
-                .secure(true)
+//                .secure(true) - 현재 배포 환경 (HTTP) 문제로 임시 주석
                 .httpOnly(true)
                 .sameSite(SameSite.LAX.attributeValue())
                 .build();
