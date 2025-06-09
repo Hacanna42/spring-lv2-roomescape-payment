@@ -1,5 +1,6 @@
 package roomescape.auth;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.web.server.Cookie.SameSite;
@@ -17,6 +18,7 @@ import roomescape.config.AuthenticationPrincipal;
 
 @RestController
 @AllArgsConstructor
+@Tag(name = "인증 관련 API", description = "로그인 및 인증 상태 확인을 위한 API입니다.")
 public class AuthController {
 
     private static final String TOKEN_NAME = "token";

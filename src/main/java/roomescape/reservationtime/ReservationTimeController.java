@@ -1,6 +1,7 @@
 package roomescape.reservationtime;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +23,7 @@ import roomescape.reservationtime.dto.ReservationTimeResponse;
 @RestController
 @RequestMapping("/times")
 @AllArgsConstructor
+@Tag(name = "예약 시간 관련 API", description = "예약 시간을 생성하고 조회하는 API입니다.")
 public class ReservationTimeController {
 
     private final ReservationTimeService reservationTimeService;

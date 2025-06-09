@@ -1,6 +1,7 @@
 package roomescape.theme;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -20,6 +21,7 @@ import roomescape.theme.dto.ThemeResponse;
 @RestController
 @RequestMapping("/themes")
 @AllArgsConstructor
+@Tag(name = "테마 관련 API", description = "테마 생성, 조회 및 삭제 등을 위한 API입니다.")
 public class ThemeController {
 
     private final ThemeService themeService;

@@ -2,6 +2,7 @@ package roomescape.member;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import roomescape.member.dto.MemberResponse;
 @RestController
 @RequestMapping("/members")
 @AllArgsConstructor
+@Tag(name = "회원 관련 API", description = "회원 생성 및 조회를 위한 API입니다.")
 public class MemberController {
 
     private final MemberService memberService;

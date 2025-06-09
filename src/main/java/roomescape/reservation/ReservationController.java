@@ -1,6 +1,7 @@
 package roomescape.reservation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import roomescape.reservation.dto.ReservationResponse;
 @RestController
 @RequestMapping("/reservations")
 @RequiredArgsConstructor
+@Tag(name = "예약 관련 API", description = "관리자가 아닌 예약 생성, 조회 및 삭제를 위한 API입니다.")
 public class ReservationController {
 
     private final ReservationService reservationService;
