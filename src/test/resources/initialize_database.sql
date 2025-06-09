@@ -4,9 +4,8 @@ ALTER TABLE theme ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE member ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE completed_payment ALTER COLUMN id RESTART WITH 1;
 
+DELETE FROM completed_payment;
 DELETE FROM reservation;
 DELETE FROM reservation_time;
 DELETE FROM theme;
 DELETE FROM member;
-DELETE FROM completed_payment;
-
