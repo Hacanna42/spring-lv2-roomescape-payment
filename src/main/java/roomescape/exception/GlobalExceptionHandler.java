@@ -1,6 +1,9 @@
 package roomescape.exception;
 
 import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,14 +15,24 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import roomescape.exception.custom.reason.reservation.ReservationNotDeletedException;
 import roomescape.exception.custom.status.CustomException;
+import roomescape.logging.LogUtil;
 
+@Slf4j
+@RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private final HttpServletRequest httpServletRequest;
+    private final LogUtil logUtil;
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handlerIllegalArgument(
             final CustomException e
     ) {
+        log.info("{} {}",
+                logUtil.formatRequestInformation(httpServletRequest),
+                logUtil.formatExceptionInformation(e));
+
         return ResponseEntity.status(e.getStatusValue())
                 .body(new ErrorResponse(e.getMessage()));
     }
